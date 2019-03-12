@@ -1,8 +1,13 @@
 from urllib.request import *
 #from requests import Request
 from bs4 import BeautifulSoup
-
+from os import popen,path
+import time
 ############################################[ Variables ]###########################################
+tm = time.ctime(int(time.time()))
+# tim=print(tm)
+tx=str(time.time())[-4:]
+# exit()
 l=[]
 prox=[]
 results=[]
@@ -10,6 +15,7 @@ a=1
 # url='https://hidemyna.me/en/proxy-list/'
 url= "https://free-proxy-list.net/"
 headers={"User-Agent":"Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:65.0) Gecko/20100101 Firefox/65.0"}
+cl=popen("clear").read() # clear command
 ####################################################################################################
 
 rep=Request(url,headers=headers)
@@ -49,27 +55,64 @@ for i in soup.find_all('tr'):
 
 ###########################################################
 
-
+print(cl)
 print("""
 	Press :
 	1) for save proxies for proxy chains
 	2) for save proxies for python 
-	#3) Not Found yet :)
+	3) for sqlmap :)
 	
 """)
 
 choice = input(' {+} ')
+file = input("[ File output name ] : ")
+reslen = input("[ number of proxies ] : ")
 
 ###########################################################
-fileop=open("file.txt","w")
+	
+		# File Name 
+
+if file == None or file == "":
+	file="output-"+tx+".txt"
+elif path.isfile(file):
+	file=file.split(".")
+	if len(file)=="2":
+		file=file[0]+'-'+tx+".txt"
+	print(file)
+
+
+if reslen == None or reslen == "":
+	reslen=10;
+rl=0
+print(file,reslen)
+fileop=open(file,"w")
 if choice == "1" :
 	for i in results:
-		print(i[0]+":"+i[1])
+		proxy=i[0]+":"+i[1]+'\n'
+		fileop.write(proxy)
+		rl=rl+1
+		if rl == reslen:
+			break
 elif choice == "2" :
 	for i in results:
-		proxy="{ "+i[6]+':"'+i[0]+":"+i[1]+'" }'
+		proxy='"'+i[6]+"\":\""+i[0]+":"+i[1]+'"'
 		prox.append(proxy)
-	fileop.write(str(prox))
+		print(proxy)
+		rl=rl+1
+		if rl == reslen:
+			break
+	resl=str(prox).replace("[","{").replace("]","}").replace("'","")
+	fileop.write(resl)
+	print(resl)
+elif choice == "3" :
+	for i in results:
+		proxy=i[6]+'://'+i[0]+":"+i[1]+'\n'
+		fileop.write(proxy)
+		rl=rl+1
+		if rl == reslen:
+			break
+print(cl,'result saved in >> ',file)
+print(tm)
 fileop.close()
 
 
