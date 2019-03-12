@@ -11,8 +11,8 @@ from os import popen
 
 cl=popen('clear').read()
 url ='http://httpbin.org/ip'
-# fprox = input("proxies file : ")
-fprox="output-9753.txt"
+fprox = input("proxies file : ")
+# fprox="output-9753.txt"
 
 #########################################"#
 
